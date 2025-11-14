@@ -16,6 +16,10 @@ https://www.dfrobot.com/product-1609.html?tracking=hOuIhw4fDaJRTdy4abz04npbQC78d
 4 x m3 screws
 1 x USBC cable
 
+# 3D Files
+
+https://cults3d.com/en/3d-model/gadget/microwriter
+
 # Demo
 
 https://www.youtube.com/shorts/yYJEvJfksPs
