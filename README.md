@@ -27,6 +27,7 @@ https://www.youtube.com/shorts/yYJEvJfksPs
 # Trainer
 
 I have also included a simple html game to learn the 5 chord Microwriter alphabet 
+https://ronibandini.github.io/Microwriter/html/index.html
 
 # Contact
 
