@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microwriter 5-finger chord alphabet trainer</title>
+    <style>
+        /* CSS Integrado Modificado */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .target-letter {
+            font-size: 80px;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .instruction {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        
+        .hand-container {
+            display: flex;
+            align-items: flex-end; /* Alinea los dedos por la parte de abajo (base) */
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            min-height: 150px; /* Asegura espacio para la diferencia de altura */
+        }
+        
+        .finger {
+            width: 60px;
+            /* La altura base es 120px, que se ajustará por cada dedo */
+            height: 120px; 
+            background: #f0f0f0;
+            border: 3px solid #ddd;
+            border-radius: 30px 30px 10px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+
+        /* --- AJUSTES DE ALTURA Y POSICIÓN PARA SIMULAR LA MANO --- */
+
+        /* Pulgar (THUMB - data-finger="0"): El más corto, y el más bajo */
+        .finger[data-finger="0"] {
+            height: 70px;
+            /* Lo mueve 50px hacia abajo desde la base de alineación flex-end */
+            transform: translateY(50px); 
+        }
+
+        /* Índice (INDEX - data-finger="1"): Alto intermedio */
+        .finger[data-finger="1"] {
+            height: 110px; 
+        }
+
+        /* Medio (MIDDLE - data-finger="2"): El más largo, el más alto */
+        .finger[data-finger="2"] {
+            height: 130px; 
+            transform: translateY(0);
+        }
+
+        /* Anular (RING - data-finger="3"): Alto intermedio */
+        .finger[data-finger="3"] {
+            height: 100px;
+        }
+
+        /* Meñique (PINKY - data-finger="4"): Corto intermedio */
+        .finger[data-finger="4"] {
+            height: 90px;
+        }
+        
+        .finger:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .finger.selected {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-color: #764ba2;
+            /* Baja el dedo "presionado" */
+            transform: translateY(3px) !important; 
+        }
+
+        .finger.selected[data-finger="0"] {
+            /* Asegura que el pulgar se mueva a pesar del ajuste inicial */
+            transform: translateY(53px) !important;
+        }
+        
+        .finger-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .finger.selected .finger-label {
+            color: white;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .skip-btn {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .skip-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .feedback {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .correct {
+            color: #4caf50;
+        }
+        
+        .incorrect {
+            color: #f44336;
+        }
+        
+        .combo-display {
+            font-family: monospace;
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Microwriter Trainer</h1>
+        <p class="subtitle">Learn the 5-finger chord alphabet - Roni Bandini 11/2025</p>
+        
+        <div class="instruction">Form the letter/sign:</div>
+        <div class="target-letter" id="targetLetter">A</div>
+        
+        <div class="hand-container">
+            <div class="finger" data-finger="0" onclick="toggleFinger(0)">
+                <span class="finger-label">THUMB</span>
+            </div>
+            <div class="finger" data-finger="1" onclick="toggleFinger(1)">
+                <span class="finger-label">INDEX</span>
+            </div>
+            <div class="finger" data-finger="2" onclick="toggleFinger(2)">
+                <span class="finger-label">MIDDLE</span>
+            </div>
+            <div class="finger" data-finger="3" onclick="toggleFinger(3)">
+                <span class="finger-label">RING</span>
+            </div>
+            <div class="finger" data-finger="4" onclick="toggleFinger(4)">
+                <span class="finger-label">PINKY</span>
+            </div>
+        </div>
+        
+        <div class="combo-display" id="comboDisplay">00000</div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="button-group">
+            <button class="submit-btn" onclick="checkAnswer()">Submit</button>
+            <button class="skip-btn" onclick="nextLetter()">Skip</button>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">Correct</div>
+                <div class="score-value" id="correctScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Attempts</div>
+                <div class="score-value" id="totalScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Accuracy</div>
+                <div class="score-value" id="accuracy">0%</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',' ','.','-',',','\''];
+        
+        // Combos basados en el mapeo P I M A Ñ
+        const combos = {
+            "01100": 'A', "00111": 'B', "10100": 'C', "11100": 'D', "01000": 'E',
+            "11110": 'F', "00011": 'G', "10001": 'H', "11000": 'I', "10011": 'J',
+            "10010": 'K', "11001": 'L', "01111": 'M', "00110": 'N', "00100": 'O',
+            "11111": 'P', "00101": 'Q', "11010": 'R', "00010": 'S', "01010": 'T',
+            "00001": 'U', "01001": 'V', "11011": 'W', "10111": 'X', "10110": 'Y',
+            "10101": 'Z', "10000": ' ', "01110": '.', "01101": '-', "01011": ',',
+            "11101": '\''
+        };
+        
+        const reverseMap = {};
+        for (let combo in combos) {
+            reverseMap[combos[combo]] = combo;
+        }
+        
+        let currentLetter = '';
+        let fingerStates = [0, 0, 0, 0, 0];
+        let correct = 0;
+        let total = 0;
+        
+        function toggleFinger(index) {
+            fingerStates[index] = fingerStates[index] === 0 ? 1 : 0;
+            updateFingerDisplay();
+            updateComboDisplay();
+            document.getElementById('feedback').textContent = '';
+        }
+        
+        function updateFingerDisplay() {
+            const fingers = document.querySelectorAll('.finger');
+            fingers.forEach((finger, index) => {
+                if (fingerStates[index] === 1) {
+                    finger.classList.add('selected');
+                } else {
+                    finger.classList.remove('selected');
+                }
+            });
+        }
+        
+        function updateComboDisplay() {
+            document.getElementById('comboDisplay').textContent = fingerStates.join('');
+        }
+        
+        function checkAnswer() {
+            const userCombo = fingerStates.join('');
+            const correctCombo = reverseMap[currentLetter];
+            
+            total++;
+            
+            if (userCombo === correctCombo) {
+                correct++;
+                document.getElementById('feedback').textContent = '✓ Correct!';
+                document.getElementById('feedback').className = 'feedback correct';
+                setTimeout(nextLetter, 1000);
+            } else {
+                document.getElementById('feedback').textContent = '✗ Try again!';
+                document.getElementById('feedback').className = 'feedback incorrect';
+            }
+            
+            updateScores();
+        }
+        
+        function nextLetter() {
+            currentLetter = letters[Math.floor(Math.random() * letters.length)];
+            const displayLetter = currentLetter === ' ' ? 'SPACE' : currentLetter;
+            document.getElementById('targetLetter').textContent = displayLetter;
+            
+            fingerStates = [0, 0, 0, 0, 0];
+            updateFingerDisplay();
+            updateComboDisplay();
+            document.getElementById('feedback').textContent = '';
+        }
+        
+        function updateScores() {
+            document.getElementById('correctScore').textContent = correct;
+            document.getElementById('totalScore').textContent = total;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+        
+        // Initialize game
+        nextLetter();
+    </script>
+</body>
+</html>
