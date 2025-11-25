@@ -24,6 +24,10 @@ https://cults3d.com/en/3d-model/gadget/microwriter
 
 https://www.youtube.com/shorts/yYJEvJfksPs
 
+# Trainer
+
+I have also included a simple html game to learn the 5 chord Microwriter alphabet 
+
 # Contact
 
 Roni Bandini 
