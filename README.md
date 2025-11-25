@@ -24,6 +24,11 @@ https://cults3d.com/en/3d-model/gadget/microwriter
 
 https://www.youtube.com/shorts/yYJEvJfksPs
 
+# 5 chord alphabet 
+
+<img width="324" height="518" alt="Microwriter Alphabet" src="https://github.com/user-attachments/assets/ac894e12-5919-48af-a4ca-abcc3438d6db" />
+
+
 # Trainer
 
 I have also included a simple html game to learn the 5 chord Microwriter alphabet 
